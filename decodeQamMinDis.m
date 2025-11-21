@@ -41,9 +41,11 @@ function [seqgf,failed_init,l]= decodeQamMinDis(code_seq, hard_d_cmplx, hard_d_g
           for j=1:length(idx)
             current_symbol = d_dec_f(idx(j));
             distance=abs(qam16-current_symbol);
-            [~, sorted_idx]=mink(distance,6);
+            [~, sorted_idx]=mink(distance,6); %use 6 for GF16
+           
             closest_symbols=gf16(sorted_idx);
-            rand_idx=randi([1,4]);
+            rand_idx=randi([1,4]); %use 4 for GF16
+             
             new_symbol=closest_symbols(rand_idx);
             temp_gf16(idx(j))= new_symbol; 
           end
@@ -117,5 +119,4 @@ function [seqgf,failed_init,l]= decodeQamMinDis(code_seq, hard_d_cmplx, hard_d_g
 
 seqgf = best_seq;
 end
-
 
