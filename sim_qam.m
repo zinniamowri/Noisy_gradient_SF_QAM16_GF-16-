@@ -5,12 +5,10 @@ Eb_No_db =9:1:14;
 
 T=60; %max decoder iteration
 
-%tuning parameters
-%eta=[.2, .2111, .2222, 0.2333,0.2444,0.2556,0.2667,0.2778,0.2889, .3]
-eta=0.3; %.14
+eta=1; %.14
 w=25; %.4; %25
 
-flip_num=7;
+flip_num=5;
 
 p=4; % number of bits per symbol
 q = 2^p; 
@@ -31,9 +29,7 @@ for i=1:M
     CN_lst{i,1}=find(h(i,:));
 end
 
-%info_seq=randi([0 q-1], 1, K);
-
-info_seq=randi([0 3], 1, K); %GF(4)
+info_seq=randi([0 q-1], 1, K);
 
 code_seq = gf_mat_mul(info_seq,G, add_mat, mul_mat); %given codeword
 Syndromes = decod_prod(code_seq,h,CN_lst, mul_mat, add_mat);
@@ -103,11 +99,11 @@ for i = 1:length(Eb_No_db)
     % Set the parameters based on the current Eb_N0 value
     %dynamic adjusting of number of flips to be done
     if Eb_No_db(i) >= 9 && Eb_No_db(i)<= 10
-        flip_num=7;      
+        flip_num=5;      
     elseif Eb_No_db(i) > 10 && Eb_No_db(i)<= 11
-        flip_num=7;
+        flip_num=5;
     elseif Eb_No_db(i) > 11 && Eb_No_db(i)<= 14
-        flip_num=2;
+        flip_num=5;
     end
 
 
