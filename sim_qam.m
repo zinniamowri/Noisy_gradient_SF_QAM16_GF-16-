@@ -3,7 +3,7 @@ rng(0)
 
 Eb_No_db =9:1:14;
 
-T=60; %max decoder iteration
+T=960; %max decoder iteration
 
 eta=1; %.14
 w=25; %.4; %25
