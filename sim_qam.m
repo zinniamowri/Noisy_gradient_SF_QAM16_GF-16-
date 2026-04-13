@@ -2,6 +2,8 @@
 %that changes have been made in the plot
 %but inside the code the variables are not changed
 %so don't get confused
+%we have used code rate 1/2 while simulating the channel
+%so everything is coded.
 
 clear
 rng(0)
