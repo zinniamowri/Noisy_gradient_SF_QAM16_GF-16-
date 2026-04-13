@@ -1,12 +1,16 @@
+%here the uncoded hard-decision is actually 16-QAM coded transmission
+%that changes have been made in the plot
+%but inside the code the variables are not changed
+%so don't get confused
+
 clear
 rng(0)
 
-Eb_No_db =9:1:14;
+Eb_No_db =9:1:13;
 
 T=960; %max decoder iteration
-
-eta=1; %.14
-w=25; %.4; %25
+eta=1; 
+w=25; 
 
 flip_num=5;
 
@@ -96,18 +100,8 @@ max_gen=1e6; % maximum number of frame to be generated
 
 for i = 1:length(Eb_No_db)
 
-    % Set the parameters based on the current Eb_N0 value
-    %dynamic adjusting of number of flips to be done
-    if Eb_No_db(i) >= 9 && Eb_No_db(i)<= 10
-        flip_num=5;      
-    elseif Eb_No_db(i) > 10 && Eb_No_db(i)<= 11
-        flip_num=5;
-    elseif Eb_No_db(i) > 11 && Eb_No_db(i)<= 14
-        flip_num=5;
-    end
 
-
-     while(FE(i) < targetFE && genFrame(i)<max_gen)
+    while(FE(i) < targetFE && genFrame(i)<max_gen)
 
         genFrame(i)=genFrame(i)+1;
         c(1,1:N) = qam16(code_seq'+1,1); % codeword in complex
@@ -131,7 +125,7 @@ for i = 1:length(Eb_No_db)
         errors = hard_d_cmplx ~= c; 
         n_errors_hard =sum(errors); %total number of symbol errors after hard decision made
               
-        errors_uncoded_bit = zeros(1, K);
+        errors_uncoded_bit = zeros(1, K); 
 
         %bit error calculation in hard decision
         for e = 1 : K          
@@ -145,6 +139,7 @@ for i = 1:length(Eb_No_db)
                 end
         end
         
+        %hard-decision error
         un_bit_error = sum(errors_uncoded_bit); % no of bit error in each frame
         BE_unCoded(i)=BE_unCoded(i)+un_bit_error; % total no. of bit error in total frame generated in current Eb/No
         
@@ -184,7 +179,7 @@ for i = 1:length(Eb_No_db)
         BE_unCoded(i) / (genFrame(i) * N * p));
 end
 
-BERunCoded= BE_unCoded ./(genFrame * N *p); %bit error rate for uncoded
+BERunCoded= BE_unCoded ./(genFrame * N *p); %bit error rate for hard-decision (16-QAM coded)
 
 BERCoded = BE_Coded ./ (genFrame * N *p); %bit error rate for coded
 
@@ -192,28 +187,29 @@ BERCoded = BE_Coded ./ (genFrame * N *p); %bit error rate for coded
 ems_Eb_N0=[8,8.4,9.2,9.6];
 ems_ber=[0.0330501,0.00532898,0.000337068,4.8366e-06];
 
- figure;
+figure;
  
- semilogy(Eb_No_db, BERCoded, 'gx-' );
- grid on;
+ semilogy(Eb_No_db, BERCoded, 'gx-', 'LineWidth', 1.2 );
  hold on;
-
- semilogy(ems_Eb_N0,ems_ber, 'bx-');
+ semilogy(ems_Eb_N0,ems_ber, 'bx-', 'LineWidth', 1.2);
  hold on;
-
- semilogy(Eb_No_db, BERunCoded, 'rx-' );
+ semilogy(Eb_No_db, BERunCoded, 'rx-', 'LineWidth', 1.2 );
  hold off;
 
- ylim([10e-9 10e-1]);
- xlim([7 15]);
- xlabel('Eb/No (dB)'); 
- ylabel('Bit Error Rate (BER)'); 
- title('BER curve without noise perturbation');
- hold off;
-legend( ...
-    sprintf('Proposed NGDSF (w = %.2f, \\eta = %.2f)', w, eta), ...
-    'EMS', 'Uncoded','Location', 'northeast');
+ % Grid and labels
+grid on;
+xlabel('E_b/N_0 (dB)', 'FontSize', 12);
+ylabel('BER', 'FontSize', 12);
 
+legend('NGDSF', 'EMS', '16-QAM(coded)', ...
+       'Location', 'northeast');
+
+% Axis limits for clean comparison
+ylim([1e-7 1e0]);
+xlim([7 14]);
+
+% Improve aesthetics
+set(gca, 'FontSize', 12, 'LineWidth', 1);
 
 
 
